@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>Hydro Power Plants</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: whitesmoke;
+            font-family: Lato, sans-serif;
+            color: #0D0000;
+        }
+        header {
+            padding: 6px 10%;
+        }
+        h1 {
+            display: inline-block;
+            margin-right: 20px;
+            color: #001323;
+        }
+        h2 {
+            display: inline-block;
+            color: #001323;
+        }
+        #map {
+            width: 80%;
+            height: 540px;
+            margin: 10px auto;
+        }
+        footer {
+            padding: 6px 10%;
+            width: 80%;
+        }
+        p {
+            font-size: 1em;
+            color: #001323;
+        }
+        .leaflet-popup-content-wrapper {
+            background-color: #404040
+        }
+        .leaflet-popup-tip {
+            background-color: #404040
+        }
+        .leaflet-popup-content {
+            color: white;
+            align-content: center
+        }
+        .leaflet-clickable {
+            cursor: crosshair !important;
+        }
+        .popupImage {
+            max-width: 50px;
+            max-height: 50px;
+            margin: auto;
+            display: block
+        }
+        .nflImage {
+            max-width: 100px;
+            max-height: 100px;
+            margin: auto;
+            display: block
+        }
+        #cityInput {
+            background-image: url('https://static.thenounproject.com/png/105498-200.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 200px;
+            height: 15px;
+            font-size: 24px;
+            padding: 8px 50px 8px 40px;
+            border: 1px solid #ddd;
+            margin-left: 25px;
+            border-radius: 12px;
+            vertical-align: middle;
+            text-align: inherit;
+        }
+        button{
+            background: #f0f0f0 url(https://cdn2.iconfinder.com/data/icons/web-application-icons-part-i/100/Artboard_43-512.png);
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: 6px 0px;
+            border-radius: 12px;
+            padding: 20px 20px 20px 32px;
+            font-size: 24px;
+            margin-left: 150px;
+            height: 12px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Hydro Power Plants</h1>
+        <h2>Map Subtitle</h2>
+    </header>
+    <button onclick="home()" align="middle"></button>
+    <input type="text" id="cityInput" onkeyup="citySearch()" placeholder="City..." align="middle">
+
+    <div id='map'></div>
+
+    <footer>
+        <p>Map authored by YOUR NAME</p>
+        <p>Additional information about the data and map goes here.</p>
+    </footer>
+
+    <script src="stadiums.geojson"></script>
+    <script>
+        
+    
+
+       var map = L.map('map', {
+          center: [36,-98],
+          zoom: 4,
+      });
+      
+      var tiles = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+          subdomains: 'abcd',
+          maxZoom: 19
+      });  
+      
+      tiles.addTo(map);
+        
+    // Add GeoJson Data to the map. Filter by NCAA D1 Football
+        var NCAA = L.geoJson(stadiums, {
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng, {
+                    color: 'darkcyan', 
+                    weight: 2,
+                    fillColor: 'darkcyan',
+                    fillOpacity: 0.8,
+                    radius: 4
+                });
+            },
+            //Filter stadiums to only show NCAA D1 Football stadiums
+            filter: function(feature,layer){
+                if(feature.properties.USE == 'NCAA DIVISION 1-FBS FOOTBALL'){
+                    return feature;
+                };
+            },
+            onEachFeature : function(feature, layer){
+                //console.log(layer);
+                layer.on('mouseover', function() {
+                    layer.setStyle({
+                        fillColor: 'pink',
+                        color: 'pink'
+                    });
+                });
+                layer.on('mouseout', function() {
+                    layer.setStyle({
+                        fillColor: 'darkcyan',
+                        color: 'darkcyan'
+                    });
+                });
+                var ncaaLogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/NCAA_logo.svg/1200px-NCAA_logo.svg.png"
+                layer.bindPopup("<img src='"+ ncaaLogo + "'"+ " class=nflImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME+ "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM+ "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
+                    maxWidth: 500
+                });
+            }
+        }).addTo(map);
+    
+    // Add GeoJson Data to the map. Filter by MLS
+        var MLS = L.geoJson(stadiums, {
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng, {
+                    color: 'red', 
+                    weight: 2,
+                    fillColor: 'red',
+                    fillOpacity: 0.8,
+                    radius: 4
+                });
+            },
+            //Filter stadiums to only show MLS stadiums
+            filter: function(feature,layer){
+                if(feature.properties.USE == 'MLS'){
+                    return feature;
+                };
+            },
+            onEachFeature : function(feature, layer){
+                //console.log(layer);
+                layer.on('mouseover', function() {
+                    layer.setStyle({
+                        fillColor: 'blue',
+                        color: 'blue'
+                    });
+                });
+                layer.on('mouseout', function() {
+                    layer.setStyle({
+                        fillColor: 'red',
+                        color: 'red'
+                    });
+                });
+                var mlsImage = "https://res-2.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/l8up0qozbfayyloejx3x"
+                layer.bindPopup("<img src='"+ mlsImage + "'"+ " class=popupImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME + "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM + "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
+                    maxWidth: 200
+                });
+            }
+        }).addTo(map);
+        
+        // Add GeoJson Data to the map. Filter by NFL
+        var NFL = L.geoJson(stadiums, {
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng, {
+                    color: 'blue', 
+                    weight: 2,
+                    fillColor: 'blue',
+                    fillOpacity: 0.8,
+                    radius: 4
+                });
+            },
+            //Filter stadiums to only show NFL stadiums
+            filter: function(feature,layer){
+                if(feature.properties.USE == 'NFL'){
+                    return feature;
+                };
+            },
+            onEachFeature : function(feature, layer){
+                //console.log(layer);
+                layer.on('mouseover', function() {
+                    layer.setStyle({
+                        fillColor: 'red',
+                        color: 'red'
+                    });
+                });
+                layer.on('mouseout', function() {
+                    layer.setStyle({
+                        fillColor: 'blue',
+                        color: 'blue'
+                    });
+                });
+                var nflLogo = "http://pluspng.com/img-png/logo-nfl-png-logo-nfl-1600.png"
+                layer.bindPopup("<img src='"+ nflLogo + "'"+ " class=nflImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME+ "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM+ "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
+                    maxWidth: 500
+                });
+            }
+        }).addTo(map);
+        
+        // Add GeoJson Data to the map. Filter by MLB
+        var MLB = L.geoJson(stadiums, {
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng, {
+                    color: 'green', 
+                    weight: 2,
+                    fillColor: 'green',
+                    fillOpacity: 0.8,
+                    radius: 4
+                });
+            },
+            //Filter stadiums to only show MLB stadiums
+            filter: function(feature,layer){
+                if(feature.properties.USE == 'MLB'){
+                    return feature;
+                };
+            },
+            onEachFeature : function(feature, layer){
+                //console.log(layer);
+                layer.on('mouseover', function() {
+                    layer.setStyle({
+                        fillColor: 'red',
+                        color: 'red'
+                    });
+                });
+                layer.on('mouseout', function() {
+                    layer.setStyle({
+                        fillColor: 'green',
+                        color: 'green'
+                    });
+                });
+                var mlbLogo = "https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/Major_League_Baseball_logo.svg/1200px-Major_League_Baseball_logo.svg.png"
+                layer.bindPopup("<img src='"+ mlbLogo + "'"+ " class=nflImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME+ "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM+ "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
+                    maxWidth: 500
+                });
+            }
+        }).addTo(map);
+        
+        // Add GeoJson Data to the map. Filter by NHL
+        var NHL = L.geoJson(stadiums, {
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng, {
+                    color: 'orange', 
+                    weight: 2,
+                    fillColor: 'orange',
+                    fillOpacity: 0.8,
+                    radius: 4
+                });
+            },
+            //Filter stadiums to only show MLB stadiums
+            filter: function(feature,layer){
+                if(feature.properties.USE == 'NHL'){
+                    return feature;
+                };
+            },
+            onEachFeature : function(feature, layer){
+                //console.log(layer);
+                layer.on('mouseover', function() {
+                    layer.setStyle({
+                        fillColor: 'red',
+                        color: 'red'
+                    });
+                });
+                layer.on('mouseout', function() {
+                    layer.setStyle({
+                        fillColor: 'orange',
+                        color: 'orange'
+                    });
+                });
+                var nhlLogo = "https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/05_NHL_Shield.svg/1200px-05_NHL_Shield.svg.png"
+                layer.bindPopup("<img src='"+ nhlLogo + "'"+ " class=nflImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME+ "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM+ "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
+                    maxWidth: 500
+                });
+            }
+        }).addTo(map);
+                  
+        // Add GeoJson Data to the map. Filter by NBA
+        var NBA = L.geoJson(stadiums, {
+            pointToLayer: function(feature,latlng){
+                return L.circleMarker(latlng, {
+                    color: 'purple', 
+                    weight: 2,
+                    fillColor: 'purple',
+                    fillOpacity: 0.8,
+                    radius: 4
+                });
+            },
+            //Filter stadiums to only show NBA stadiums
+            filter: function(feature,layer){
+                if(feature.properties.USE == 'NBA'){
+                    return feature;
+                };
+            },
+            onEachFeature : function(feature, layer){
+                //console.log(layer);
+                layer.on('mouseover', function() {
+                    layer.setStyle({
+                        fillColor: 'pink',
+                        color: 'pink'
+                    });
+                });
+                layer.on('mouseout', function() {
+                    layer.setStyle({
+                        fillColor: 'purple',
+                        color: 'purple'
+                    });
+                });
+                var nbaLogo = "https://theundefeated.com/wp-content/uploads/2017/05/nba-logo.png"
+                layer.bindPopup("<img src='"+ nbaLogo + "'"+ " class=nflImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME+ "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM+ "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
+                    maxWidth: 500
+                });
+            }
+        }).addTo(map);
+        
+         var sourcesLayers = {
+            "<b style='color: darkcyan'>NCAA D1 Football</b>": NCAA,
+            "<b style='color: red'>MLS</b>": MLS,
+            "<b style='color: blue'>NFL</b>": NFL,
+            "<b style='color: green'>MLB</b>": MLB,
+            "<b style='color: orange'>NHL</b>": NHL,
+            "<b style='color: purple'>NBA</b>": NBA
+        };
+        
+        // Layer control
+        L.control.layers(null, sourcesLayers, { collapsed:true, autoZIndex:true}).addTo(map);
+        
+        
+        
+        // Define function for city search
+        function citySearch() {
+            var input, filter, layer;
+            input = document.getElementById("cityInput");
+            filter = input.value.toUpperCase();
+            console.log(filter);
+            layer = newLayer;
+            var newLayer = L.geoJson(stadiums);
+            var stadiumLayer = newLayer.getLayers();
+            for (var i = 0; i < stadiumLayer.length; i++){
+                city = stadiumLayer[i].feature.properties.CITY;
+                coords = stadiumLayer[i].feature.geometry.coordinates;
+                //console.log(coords);
+                var lat = coords[1];
+                var long = coords[0];
+                var correctedCoords = [lat, long];
+                //console.log(correctedCoords);
+                //console.log(coords[i]);
+                if (filter == city){
+                    var selected = stadiumLayer[i].feature.properties
+                    console.log (selected)
+                    var lat = coords[1];
+                    var long = coords[0];
+                    var correctedCoords = [lat, long];
+                    map.setView(correctedCoords, 10);
+                }
+            }
+        };
+        
+        // Define function for the home button
+        function home() {
+            map.setView([36,-98], 4);
+        }
+        
+        
+        
+            
+        
+
+        
+    </script>
+    
+</body>
+
+</html>
