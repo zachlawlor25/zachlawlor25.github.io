@@ -3,7 +3,7 @@
 
 <head>
     <meta charset=utf-8 />
-    <title>Hydro Power Plants</title>
+    <title>USA Major Sporting Venues</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
@@ -15,21 +15,29 @@
         body {
             margin: 0;
             padding: 0;
-            background: whitesmoke;
+            background-color: #062F4F;
             font-family: Lato, sans-serif;
             color: #0D0000;
         }
         header {
             padding: 6px 10%;
+            background-color: black;
+            margin-bottom: 10px;
+        }
+        footer {
+            background-color: #B82601
         }
         h1 {
             display: inline-block;
             margin-right: 20px;
-            color: #001323;
+            color: white;
+            text-shadow: 3px 3px #B82601;
+            font-size: 50px;
+            font-family: monospace;
         }
         h2 {
             display: inline-block;
-            color: #001323;
+            color: white;
         }
         #map {
             width: 80%;
@@ -42,7 +50,7 @@
         }
         p {
             font-size: 1em;
-            color: #001323;
+            color: white;
         }
         .leaflet-popup-content-wrapper {
             background-color: #404040
@@ -89,18 +97,22 @@
             background-size: contain;
             background-position: 6px 0px;
             border-radius: 12px;
+            border-color: #B82601;
             padding: 20px 20px 20px 32px;
             font-size: 24px;
             margin-left: 150px;
             height: 12px;
             vertical-align: middle;
         }
+        button:hover{
+            background-color: #B82601
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Hydro Power Plants</h1>
+        <h1>USA Major Sporting Venues</h1>
         <h2>Map Subtitle</h2>
     </header>
     <button onclick="home()" align="middle"></button>
@@ -109,8 +121,8 @@
     <div id='map'></div>
 
     <footer>
-        <p>Map authored by YOUR NAME</p>
-        <p>Additional information about the data and map goes here.</p>
+        <p>Map authored by Zach Lawlor</p>
+        <p>Data courtesy of the United States Homeland Infrastructure Foundation-Level Data (HIFLD)</p>
     </footer>
 
     <script src="stadiums.geojson"></script>
