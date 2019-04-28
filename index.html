@@ -6,10 +6,10 @@
     <title>USA Major Sporting Venues</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="https://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     
     <link rel="shortcut icon" href="https://cdn2.iconfinder.com/data/icons/nodejs-1/512/nodejs-512.png" sizes = "32x32">
 
@@ -137,8 +137,8 @@
           zoom: 4,
       });
       
-      var tiles = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+      var tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://cartodb.com/attributions">CartoDB</a>',
           subdomains: 'abcd',
           maxZoom: 19
       });  
@@ -252,7 +252,7 @@
                         color: 'blue'
                     });
                 });
-                var nflLogo = "http://pluspng.com/img-png/logo-nfl-png-logo-nfl-1600.png"
+                var nflLogo = "https://pluspng.com/img-png/logo-nfl-png-logo-nfl-1600.png"
                 layer.bindPopup("<img src='"+ nflLogo + "'"+ " class=nflImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME+ "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM+ "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
                     maxWidth: 500
                 });
