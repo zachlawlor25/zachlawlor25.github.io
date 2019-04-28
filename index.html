@@ -10,6 +10,8 @@
 
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    
+    <link rel="shortcut icon" href="https://cdn2.iconfinder.com/data/icons/nodejs-1/512/nodejs-512.png" sizes = "32x32">
 
     <style>
         body {
@@ -43,6 +45,7 @@
             width: 80%;
             height: 540px;
             margin: 10px auto;
+            border-radius: 10px;
         }
         footer {
             padding: 6px 10%;
@@ -112,8 +115,7 @@
 
 <body>
     <header>
-        <h1>USA Major Sporting Venues</h1>
-        <h2>Map Subtitle</h2>
+        <h1>United States Major Sporting Venues</h1>
     </header>
     <button onclick="home()" align="middle"></button>
     <input type="text" id="cityInput" onkeyup="citySearch()" placeholder="City..." align="middle">
@@ -214,7 +216,7 @@
                 });
                 var mlsImage = "https://res-2.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/l8up0qozbfayyloejx3x"
                 layer.bindPopup("<img src='"+ mlsImage + "'"+ " class=popupImage "+"/>"+ "<br>" +"<b> Name: </b>" + layer.feature.properties.NAME + "<br>" + "<b> Team: </b>" + layer.feature.properties.TEAM + "<br>" + "<b> Capacity: </b>" + layer.feature.properties.USE_POP + "<br>" + "<b> Stadium Website: </b>" + "<a href='" + layer.feature.properties.SOURCE + "'>" + layer.feature.properties.SOURCE + "</a", {
-                    maxWidth: 200
+                    maxWidth: 500
                 });
             }
         }).addTo(map);
@@ -388,27 +390,33 @@
         // Define function for city search
         function citySearch() {
             var input, filter, layer;
+            // Input from the textbox
             input = document.getElementById("cityInput");
+            // converting input text to all upper case to match data in layer
             filter = input.value.toUpperCase();
+            // Console logging text typed in to text box
             console.log(filter);
             layer = newLayer;
+            // full geojson layer with no filters added to it (will not be added to map, just runs in background)
             var newLayer = L.geoJson(stadiums);
+            //Pulling layers from geojson layers (needed in order to loop through values)
             var stadiumLayer = newLayer.getLayers();
+            // Looping through layer
             for (var i = 0; i < stadiumLayer.length; i++){
+                // pulling city from layer and assinging to variable
                 city = stadiumLayer[i].feature.properties.CITY;
+                // Pulling coordinates from layers
                 coords = stadiumLayer[i].feature.geometry.coordinates;
-                //console.log(coords);
-                var lat = coords[1];
-                var long = coords[0];
-                var correctedCoords = [lat, long];
-                //console.log(correctedCoords);
-                //console.log(coords[i]);
+                // IF statement to match searched city with data
                 if (filter == city){
+                    // Assigning matched city to a variable
                     var selected = stadiumLayer[i].feature.properties
                     console.log (selected)
+                    // Assigning coordinates
                     var lat = coords[1];
                     var long = coords[0];
                     var correctedCoords = [lat, long];
+                    // Setting map view to matched city
                     map.setView(correctedCoords, 10);
                 }
             }
